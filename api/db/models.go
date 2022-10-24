@@ -13,18 +13,38 @@ type BaseModel struct {
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"deletedAt"`
 }
 
-type Book struct {
+type User struct {
 	BaseModel
-	Title       string `gorm:"not null" json:"title"`
-	SystemTitle string `gorm:"unique;not null" json:"systemTitle"`
-	Files       []File `json:"-"`
+	Username string `gorm:"unique;not null" json:"username"`
 }
 
-type File struct {
+type Shelf struct {
+	BaseModel
+	OwnerID     uint   `gorm:"not null" json:"ownerId"`
+	Owner       User   `gorm:"foreignKey:OwnerID" json:"-"`
+	Title       string `gorm:"not null" json:"title"`
+	SystemTitle string `gorm:"unique;not null" json:"systemTitle"`
+}
+
+type Book struct {
+	BaseModel
+	ShelfID     uint   `gorm:"not null" json:"shelfId"`
+	Shelf       Shelf  `gorm:"foreignKey:ShelfID" json:"-"`
+	Title       string `gorm:"not null" json:"title"`
+	SystemTitle string `gorm:"unique;not null" json:"systemTitle"`
+}
+
+type Page struct {
 	BaseModel
 	BookID      uint   `gorm:"not null" json:"bookId"`
 	Book        Book   `gorm:"foreignKey:BookID" json:"-"`
 	Title       string `gorm:"not null" json:"title"`
 	SystemTitle string `gorm:"unique;not null" json:"systemTitle"`
-	Contents    string `gorm:"not null" json:"contents"`
+}
+
+// FIXME Content should be binary data (bytes)
+type PageContent struct {
+	PageID  uint   `gorm:"primarykey" json:"pageId"`
+	Page    Page   `gorm:"foreignKey:PageID" json:"-"`
+	Content string `gorm:"not null" json:"content"`
 }

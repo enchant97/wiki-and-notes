@@ -14,8 +14,11 @@ func InitDB(dbPath string) error {
 		return err
 	}
 
+	database.AutoMigrate(&User{})
+	database.AutoMigrate(&Shelf{})
 	database.AutoMigrate(&Book{})
-	database.AutoMigrate(&File{})
+	database.AutoMigrate(&Page{})
+	database.AutoMigrate(&PageContent{})
 
 	DB = database
 	return nil
