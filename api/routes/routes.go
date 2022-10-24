@@ -5,10 +5,12 @@ import (
 
 	"github.com/enchant97/wiki-and-notes/api/core"
 	"github.com/enchant97/wiki-and-notes/api/db"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func InitRoutes(engine *gin.Engine, config core.AppConfig) {
+	engine.Use(cors.Default())
 	engine.Use(AppConfigMiddleware(config))
 
 	engine.POST("/wiki/books/", postBook)
