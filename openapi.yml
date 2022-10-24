@@ -1,0 +1,334 @@
+openapi: 3.0.0
+info:
+  title: Wiki & Notes API
+  description: ""
+  version: 0.0.0
+
+paths:
+  /users:
+    post:
+      tags:
+        - Users
+      summary: "Create a new user"
+      requestBody: { $ref: "#/components/requestBodies/CreateUser" }
+      responses:
+        201:
+          description: ""
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/User" }
+  /shelves:
+    post:
+      tags:
+        - Shelves
+      summary: "Create a new shelf"
+      requestBody: { $ref: "#/components/requestBodies/CreateShelf" }
+      responses:
+        201:
+          description: ""
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Shelf" }
+  /shelves/{shelfId}:
+    parameters:
+      - name: shelfId
+        schema:
+          type: number
+        in: path
+        required: true
+    get:
+      tags:
+        - Shelves
+      summary: "Get a shelf by it's id"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Shelf" }
+    delete:
+      tags:
+        - Shelves
+      summary: "Remove a shelf"
+      responses:
+        204:
+          description: ""
+  /shelves/{shelfId}/books:
+    parameters:
+      - name: shelfId
+        schema:
+          type: number
+        in: path
+        required: true
+    get:
+      tags:
+        - Shelves
+      summary: "Get all books on shelf"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+  /books:
+    post:
+      tags:
+        - Books
+      summary: "Create a new book"
+      requestBody: { $ref: "#/components/requestBodies/CreateBook" }
+      responses:
+        201:
+          description: ""
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Book" }
+  /books/{bookId}:
+    parameters:
+      - name: bookId
+        schema:
+          type: number
+        in: path
+        required: true
+    get:
+      tags:
+        - Books
+      summary: "Get a book by it's id"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Book" }
+    delete:
+      tags:
+        - Books
+      summary: "Remove a book"
+      responses:
+        204:
+          description: ""
+  /books/{bookId}/pages:
+    parameters:
+      - name: bookId
+        schema:
+          type: number
+        in: path
+        required: true
+    get:
+      tags:
+        - Books
+      summary: "Get all pages from book"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Page"
+  /pages:
+    post:
+      tags:
+        - Pages
+      summary: "Create a new page"
+      requestBody: { $ref: "#/components/requestBodies/CreatePage" }
+      responses:
+        201:
+          description: ""
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Page" }
+  /pages/{pageId}:
+    parameters:
+      - name: pageId
+        schema:
+          type: number
+        in: path
+        required: true
+    get:
+      tags:
+        - Pages
+      summary: "Get a page by it's id"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Page" }
+    delete:
+      tags:
+        - Pages
+      summary: "Remove a page"
+      responses:
+        204:
+          description: ""
+  /pages/{pageId}/content:
+    parameters:
+      - name: pageId
+        schema:
+          type: number
+        in: path
+        required: true
+    post:
+      tags:
+        - Pages
+      summary: "Set a page's content"
+      requestBody:
+        content:
+          text/markdown:
+            schema:
+              type: string
+      responses:
+        204:
+          description: "Page content has been set"
+    get:
+      tags:
+        - Pages
+      summary: "Get a page's content"
+      responses:
+        200:
+          description: "The page's content"
+          content:
+            text/markdown:
+              schema:
+                type: string
+
+components:
+  schemas:
+    Base:
+      type: object
+      required:
+        - id
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: integer
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        deletedAt:
+          format: date-time
+          type: string
+    User:
+      allOf:
+        - $ref: "#/components/schemas/Base"
+        - type: object
+          properties:
+            username:
+              type: string
+    Shelf:
+      allOf:
+        - $ref: "#/components/schemas/Base"
+        - type: object
+          properties:
+            title:
+              type: string
+            systemTitle:
+              type: string
+            ownerId:
+              type: number
+    Book:
+      allOf:
+        - $ref: "#/components/schemas/Base"
+        - type: object
+          properties:
+            shelfId:
+              type: integer
+            title:
+              type: string
+            systemTitle:
+              type: string
+    Page:
+      allOf:
+        - $ref: "#/components/schemas/Base"
+        - type: object
+          properties:
+            bookId:
+              type: integer
+            title:
+              type: string
+            systemTitle:
+              type: string
+    CreateUser:
+      type: object
+      required:
+        - username
+      properties:
+        username:
+          type: string
+    CreateShelf:
+      type: object
+      required:
+        - ownerId
+        - title
+        - systemTitle
+      properties:
+        ownerId:
+          type: number
+        title:
+          type: string
+        systemTitle:
+          type: string
+    CreateBook:
+      type: object
+      required:
+        - shelfId
+        - title
+        - systemTitle
+      properties:
+        shelfId:
+          type: number
+        title:
+          type: string
+        systemTitle:
+          type: string
+    CreatePage:
+      type: object
+      required:
+        - bookId
+        - title
+        - systemTitle
+      properties:
+        bookId:
+          type: number
+        title:
+          type: string
+        systemTitle:
+          type: string
+
+  requestBodies:
+    CreateUser:
+      content:
+        application/json:
+          schema:
+            allOf: [{ $ref: "#/components/schemas/CreateUser" }]
+      description: ""
+      required: true
+    CreateShelf:
+      content:
+        application/json:
+          schema:
+            allOf: [{ $ref: "#/components/schemas/CreateShelf" }]
+      description: ""
+      required: true
+    CreateBook:
+      content:
+        application/json:
+          schema:
+            allOf: [{ $ref: "#/components/schemas/CreateBook" }]
+      description: ""
+      required: true
+    CreatePage:
+      content:
+        application/json:
+          schema:
+            allOf: [{ $ref: "#/components/schemas/CreatePage" }]
+      description: ""
+      required: true
