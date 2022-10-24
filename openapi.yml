@@ -195,6 +195,18 @@ paths:
             text/markdown:
               schema:
                 type: string
+  /utils/convert-url:
+    get:
+      tags:
+        - Utils
+      summary: "Convert frontend url into the id"
+      requestBody: { $ref: "#/components/requestBodies/UrlTitleParts" }
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ConvertedIds" }
 
 components:
   schemas:
@@ -256,6 +268,17 @@ components:
               type: string
             systemTitle:
               type: string
+    ConvertedIds:
+      type: object
+      required:
+        - shelfId
+      properties:
+        shelfId:
+          type: integer
+        bookId:
+          type: integer
+        PageId:
+          type: integer
     CreateUser:
       type: object
       required:
@@ -302,6 +325,17 @@ components:
           type: string
         systemTitle:
           type: string
+    UrlTitleParts:
+      type: object
+      required:
+        - shelfTitle
+      properties:
+        shelfTitle:
+          type: string
+        bookTitle:
+          type: string
+        PageTitle:
+          type: string
 
   requestBodies:
     CreateUser:
@@ -330,5 +364,12 @@ components:
         application/json:
           schema:
             allOf: [{ $ref: "#/components/schemas/CreatePage" }]
+      description: ""
+      required: true
+    UrlTitleParts:
+      content:
+        application/json:
+          schema:
+            allOf: [{ $ref: "#/components/schemas/UrlTitleParts" }]
       description: ""
       required: true
