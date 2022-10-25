@@ -10,11 +10,14 @@ import Login from './views/Login';
 import Logout from './views/Logout';
 import NewAccount from './views/NewAccount';
 import { ApiProvider } from './contexts/ApiProvider';
+import Header from './components/Header';
+import Footer from './components/Footer';
 
 render(() =>
   <LoginProvider>
     <ApiProvider>
       <Router>
+        <Header />
         <Routes>
           <Route path='/' component={App} />
           <Route path='/create-account' component={NewAccount} />
@@ -23,6 +26,7 @@ render(() =>
           <Route path='/wiki' component={Books} />
           <Route path='/wiki/:book_id' component={Book} />
         </Routes>
+        <Footer />
       </Router>
     </ApiProvider>
   </LoginProvider>,
