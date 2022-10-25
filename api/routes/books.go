@@ -48,7 +48,7 @@ func deleteBookByID(ctx *gin.Context) {
 func getPagesByBookID(ctx *gin.Context) {
 	bookID := ctx.Param("bookID")
 	var pages []db.Page
-	if result := db.DB.First(&pages, "book_id = ?", bookID); result.Error != nil {
+	if result := db.DB.Where("book_id = ?", bookID).Find(&pages); result.Error != nil {
 		ctx.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}

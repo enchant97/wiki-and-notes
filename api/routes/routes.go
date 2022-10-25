@@ -18,6 +18,7 @@ func InitRoutes(engine *gin.Engine, config core.AppConfig) {
 	shelvesGroup := engine.Group("/shelves")
 	{
 		shelvesGroup.POST("", postShelf)
+		shelvesGroup.GET("", getAllShelves)
 		shelvesGroup.GET("/:shelfID", getShelfByID)
 		shelvesGroup.DELETE("/:shelfID", deleteShelfByID)
 		shelvesGroup.GET("/:shelfID/books", getBooksByShelfID)

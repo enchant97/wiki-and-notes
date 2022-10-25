@@ -26,6 +26,14 @@ func postShelf(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, shelf)
 }
 
+func getAllShelves(ctx *gin.Context) {
+	var shelves []db.Shelf
+	if result := db.DB.Find(&shelves); result.Error != nil {
+		ctx.AbortWithError(http.StatusInternalServerError, result.Error)
+	}
+	ctx.JSON(http.StatusOK, shelves)
+}
+
 func getShelfByID(ctx *gin.Context) {
 	shelfID := ctx.Param("shelfID")
 	var shelf db.Shelf
@@ -48,7 +56,7 @@ func deleteShelfByID(ctx *gin.Context) {
 func getBooksByShelfID(ctx *gin.Context) {
 	shelfID := ctx.Param("shelfID")
 	var books []db.Book
-	if result := db.DB.First(&books, "shelf_id = ?", shelfID); result.Error != nil {
+	if result := db.DB.Where("shelf_id = ?", shelfID).Find(&books); result.Error != nil {
 		ctx.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
