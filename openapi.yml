@@ -29,6 +29,19 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Shelf" }
+    get:
+      tags:
+        - Shelves
+      summary: "Get all shelves"
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Shelf"
   /shelves/{shelfId}:
     parameters:
       - name: shelfId
