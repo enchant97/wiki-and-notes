@@ -1,17 +1,5 @@
 import { defaultApiUrl } from "./helpers"
-import { CreateUser, LoginDetails, User } from "./types"
-
-export const BASE_URL = "http://127.0.0.1:8080"
-
-export async function getBooks() {
-  let response = await fetch(BASE_URL + "/wiki/books/")
-  return await response.json()
-}
-
-export async function getBookFiles(book_id: string) {
-  let response = await fetch(BASE_URL + "/wiki/books/" + book_id + "/files/")
-  return await response.json()
-}
+import { CreateUser, LoginDetails, Shelf, User } from "./types"
 
 export default class Api {
   defaultApiUrl = defaultApiUrl()
@@ -38,6 +26,18 @@ export default class Api {
     if (!response.ok) {
       throw new Error(`${response.status}`)
     }
+    return await response.json()
+  }
+  async getShelves(): Promise<Shelf[]> {
+    let response = await fetch(
+      this.apiUrl() + "/shelves",
+    )
+    return await response.json()
+  }
+  async getShelfById(shelfId: number): Promise<Shelf> {
+    let response = await fetch(
+      this.apiUrl() + "/shelves/" + shelfId,
+    )
     return await response.json()
   }
 }

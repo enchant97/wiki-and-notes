@@ -3,8 +3,7 @@ import { render } from 'solid-js/web';
 import { Route, Router, Routes } from '@solidjs/router';
 import './index.css';
 import App from './App';
-import Books from './views/Books';
-import Book from './views/Book';
+import Shelf from './views/Shelf';
 import { LoginProvider } from './contexts/LoginProvider';
 import Login from './views/Login';
 import Logout from './views/Logout';
@@ -23,8 +22,7 @@ render(() =>
           <Route path='/create-account' component={NewAccount} />
           <Route path='/login' component={Login} />
           <Route path='/logout' component={Logout} />
-          <Route path='/wiki' component={Books} />
-          <Route path='/wiki/:book_id' component={Book} />
+          <Route path='/:shelfTitle' component={Shelf} />
         </Routes>
         <Footer />
       </Router>
