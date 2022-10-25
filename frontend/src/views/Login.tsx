@@ -1,12 +1,13 @@
 import { Component, createSignal, onMount } from 'solid-js';
 import { useNavigate } from "@solidjs/router";
 import { useLogin } from '../contexts/LoginProvider';
+import { defaultApiUrl } from '../core/helpers';
 
 const Login: Component = () => {
   const navigate = useNavigate();
   const [login, setLogin] = useLogin();
 
-  const [apiUrl, setApiUrl] = createSignal(login()?.apiUrl || null);
+  const [apiUrl, setApiUrl] = createSignal(login()?.apiUrl || defaultApiUrl() || null);
 
   onMount(() => { if (login() !== null) navigate("/") })
 
@@ -14,6 +15,8 @@ const Login: Component = () => {
     event.preventDefault();
     let currApiUrl = apiUrl();
     if (currApiUrl) {
+      // remove trailing slash from url
+      currApiUrl = currApiUrl.replace(/\/$/, "");
       setLogin({ apiUrl: currApiUrl })
       navigate("/")
       return

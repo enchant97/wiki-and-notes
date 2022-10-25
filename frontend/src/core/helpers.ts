@@ -2,6 +2,10 @@ import { LoginDetails } from "./types";
 
 const API_URL_KEY = 'api-url';
 
+export function defaultApiUrl(): string {
+  return (new URL("/api", window.location.origin)).toString()
+}
+
 export function setLoginDetails(details: LoginDetails) {
   window.localStorage.setItem(API_URL_KEY, details.apiUrl);
 }
