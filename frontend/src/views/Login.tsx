@@ -1,25 +1,34 @@
-import { Component, createSignal, onMount } from 'solid-js';
+import { Component, createEffect } from 'solid-js';
+import { createStore } from "solid-js/store";
 import { Link, useNavigate } from "@solidjs/router";
 import { useLogin } from '../contexts/LoginProvider';
 import { defaultApiUrl } from '../core/helpers';
+import Api from '../core/api';
 
 const Login: Component = () => {
   const navigate = useNavigate();
   const [login, setLogin] = useLogin();
 
-  const [apiUrl, setApiUrl] = createSignal(login()?.apiUrl || defaultApiUrl() || null);
+  const [loginForm, setLoginForm] = createStore({
+    apiUrl: login()?.apiUrl || defaultApiUrl(),
+    username: "",
+  })
 
-  onMount(() => { if (login() !== null) navigate("/") })
+  createEffect(() => { if (login() !== null) navigate("/") })
 
-  const handleSubmit = (event: any) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
-    let currApiUrl = apiUrl();
-    if (currApiUrl) {
+    let currApiUrl = loginForm.apiUrl;
+    let currUsername = loginForm.username.trim()
+    if (currApiUrl && currUsername) {
       // remove trailing slash from url
       currApiUrl = currApiUrl.replace(/\/$/, "");
-      setLogin({ apiUrl: currApiUrl })
-      navigate("/")
-      return
+
+      let tempApi = new Api(null)
+      tempApi.defaultApiUrl = currApiUrl
+      let token = await tempApi.postLogin({ username: currUsername })
+
+      setLogin({ apiUrl: currApiUrl, token })
     }
   }
 
@@ -39,8 +48,18 @@ const Login: Component = () => {
                   class="input input-bordered"
                   placeholder="https://"
                   type="url" id="apiUrl" name="apiUrl"
-                  value={apiUrl() || ""}
-                  onInput={(e) => setApiUrl(e.currentTarget.value)}
+                  value={loginForm.apiUrl}
+                  onInput={(e) => setLoginForm({ ["apiUrl"]: e.currentTarget.value })}
+                  required
+                />
+              </div>
+              <div class="form-control">
+                <label class="label" for="username">Username:</label>
+                <input
+                  class="input input-bordered"
+                  type="text" id="username" name="username"
+                  value={loginForm.username}
+                  onInput={(e) => setLoginForm({ ["username"]: e.currentTarget.value })}
                   required
                 />
               </div>

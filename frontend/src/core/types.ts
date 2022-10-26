@@ -1,5 +1,6 @@
 export type LoginDetails = {
   apiUrl: string
+  token: string
 }
 
 export type Base = {
@@ -17,6 +18,10 @@ export type Shelf = Base & {
   title: string
   systemTitle: string
   ownerId: number
+}
+
+export type Login = {
+  username: string
 }
 
 export type CreateUser = {

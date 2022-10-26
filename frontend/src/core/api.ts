@@ -1,5 +1,5 @@
 import { defaultApiUrl } from "./helpers"
-import { CreateUser, LoginDetails, Shelf, User } from "./types"
+import { CreateUser, Login, LoginDetails, Shelf, User } from "./types"
 
 export default class Api {
   defaultApiUrl = defaultApiUrl()
@@ -15,6 +15,19 @@ export default class Api {
     return this.login?.apiUrl || this.defaultApiUrl
   }
 
+  async postLogin(login: Login): Promise<string> {
+    let response = await fetch(
+      this.apiUrl() + "/auth/internal/token",
+      {
+        method: "POST",
+        body: JSON.stringify(login),
+      },
+    )
+    if (!response.ok) {
+      throw new Error(`${response.status}`)
+    }
+    return await response.text()
+  }
   async postUser(user: CreateUser): Promise<User> {
     let response = await fetch(
       this.apiUrl() + "/users",
