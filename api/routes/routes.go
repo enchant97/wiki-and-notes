@@ -10,6 +10,11 @@ func InitRoutes(engine *gin.Engine, config core.AppConfig) {
 	engine.Use(cors.Default())
 	engine.Use(AppConfigMiddleware(config))
 
+	authGroup := engine.Group("/auth")
+	{
+		authGroup.POST("/internal/token", postInternalToken)
+	}
+
 	usersGroup := engine.Group("/users")
 	{
 		usersGroup.POST("", postUser)

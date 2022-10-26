@@ -1,5 +1,9 @@
 package core
 
+type Login struct {
+	Username string `binding:"required" json:"username"`
+}
+
 type CreateUser struct {
 	Username string `binding:"required" json:"username"`
 }
