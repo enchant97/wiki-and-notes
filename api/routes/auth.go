@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -26,7 +27,7 @@ func postInternalToken(ctx *gin.Context) {
 
 	// TODO add 'exp' for expiry time
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": user.ID,
+		"sub": fmt.Sprintf("%d", user.ID),
 		"nbf": time.Now().UTC().Add(-5 * time.Second).Unix(),
 	})
 	tokenString, err := token.SignedString([]byte(config.Secret))

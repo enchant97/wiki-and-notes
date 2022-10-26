@@ -9,6 +9,8 @@ import (
 func InitRoutes(engine *gin.Engine, config core.AppConfig) {
 	engine.Use(cors.Default())
 	engine.Use(AppConfigMiddleware(config))
+	engine.Use(AuthenticationMiddleware(false, config))
+	authRequired := AuthenticationMiddleware(true, config)
 
 	authGroup := engine.Group("/auth")
 	{
@@ -18,6 +20,10 @@ func InitRoutes(engine *gin.Engine, config core.AppConfig) {
 	usersGroup := engine.Group("/users")
 	{
 		usersGroup.POST("", postUser)
+		usersGroup.Use(authRequired)
+		{
+			usersGroup.GET("/me", getUserMe)
+		}
 	}
 
 	shelvesGroup := engine.Group("/shelves")

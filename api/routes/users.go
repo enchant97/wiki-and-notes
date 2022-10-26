@@ -23,3 +23,13 @@ func postUser(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusCreated, user)
 }
+
+func getUserMe(ctx *gin.Context) {
+	userID := ctx.MustGet("AuthenticatedUserID")
+	var user db.User
+	if response := db.DB.First(&user, "id = ?", userID); response.Error != nil {
+		ctx.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+	ctx.JSON(http.StatusOK, user)
+}
