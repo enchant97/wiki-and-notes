@@ -4,6 +4,7 @@ import { Link, useNavigate } from "@solidjs/router";
 import { useLogin } from '../contexts/LoginProvider';
 import { defaultApiUrl } from '../core/helpers';
 import Api from '../core/api';
+import { ApiError } from '../core/exceptions';
 
 const Login: Component = () => {
   const navigate = useNavigate();
@@ -26,9 +27,16 @@ const Login: Component = () => {
 
       let tempApi = new Api(null)
       tempApi.defaultApiUrl = currApiUrl
-      let token = await tempApi.postLogin({ username: currUsername })
-
-      setLogin({ apiUrl: currApiUrl, token })
+      try {
+        let token = await tempApi.postLogin({ username: currUsername })
+        setLogin({ apiUrl: currApiUrl, token })
+      } catch (err) {
+        if (err instanceof ApiError) {
+          alert(err.message)
+        } else {
+          throw err;
+        }
+      }
     }
   }
 
