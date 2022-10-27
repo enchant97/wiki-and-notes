@@ -8,7 +8,7 @@ const Header: Component = () => {
   return (
     <header class="navbar bg-base-100">
       <div class="navbar-start">
-        <a class="btn btn-ghost normal-case text-xl">Wiki & Notes</a>
+        <Link class="btn btn-ghost normal-case text-xl" href="/">Wiki & Notes</Link>
       </div>
       <nav class="navbar-end">
         <Show when={login() === null} fallback={<Link href="/logout" class="btn">Logout</Link>}>

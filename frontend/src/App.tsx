@@ -29,7 +29,7 @@ const App: Component = () => {
   return (
     <div class="grid grid-cols-3 gap-4 gap-4">
       <For each={loadedShelves()}>
-        {(row) => <Link class="transition card bg-base-100 shadow-xl hover:bg-neutral-focus duration-300" href={"/" + row.systemTitle}>
+        {(row) => <Link class="transition card bg-base-200 shadow-xl hover:bg-neutral-focus duration-300" href={"/" + row.systemTitle}>
           <div class="card-body">
             <h2 class="card-title">{row.title}</h2>
           </div>
