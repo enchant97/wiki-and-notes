@@ -3,7 +3,7 @@ import { createStore } from "solid-js/store";
 import { Link, useNavigate } from "@solidjs/router";
 import { useLogin } from '../contexts/LoginProvider';
 import { defaultApiUrl } from '../core/helpers';
-import Api from '../core/api';
+import { getTempApi } from '../core/api';
 import { ApiError } from '../core/exceptions';
 import { useToast, ToastTypes } from '../contexts/ToastProvider';
 
@@ -21,14 +21,10 @@ const Login: Component = () => {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
-    let currApiUrl = loginForm.apiUrl;
+    let currApiUrl = loginForm.apiUrl.replace(/\/$/, "");
     let currUsername = loginForm.username.trim()
     if (currApiUrl && currUsername) {
-      // remove trailing slash from url
-      currApiUrl = currApiUrl.replace(/\/$/, "");
-
-      let tempApi = new Api(null)
-      tempApi.defaultApiUrl = currApiUrl
+      let tempApi = getTempApi(currApiUrl);
       try {
         let token = await tempApi.postLogin({ username: currUsername })
         setLogin({ apiUrl: currApiUrl, token })

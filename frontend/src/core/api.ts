@@ -129,3 +129,14 @@ export default class Api {
     }
   }
 }
+
+/**
+ * Get temporary api object without a login
+ * @param apiUrl Default api url to use
+ * @returns Temporary api
+ */
+export function getTempApi(apiUrl: string): Api {
+  let tempApi = new Api(null)
+  tempApi.defaultApiUrl = apiUrl
+  return tempApi
+}

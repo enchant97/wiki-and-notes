@@ -1,8 +1,9 @@
-import { Component, createSignal, onMount } from 'solid-js';
+import { Component, createEffect } from 'solid-js';
+import { createStore } from "solid-js/store";
 import { Link, useNavigate } from "@solidjs/router";
 import { useLogin } from '../contexts/LoginProvider';
 import { defaultApiUrl } from '../core/helpers';
-import Api from '../core/api';
+import { getTempApi } from '../core/api';
 import { useToast, ToastTypes } from '../contexts/ToastProvider';
 import { ApiError } from '../core/exceptions';
 
@@ -10,21 +11,19 @@ const NewAccount: Component = () => {
   const navigate = useNavigate()
   const [login] = useLogin()
   const { push: pushToast } = useToast();
-  const [apiUrl, setApiUrl] = createSignal(login()?.apiUrl || defaultApiUrl() || null)
-  const [username, setUsername] = createSignal("")
+  const [newAccForm, setNewAccForm] = createStore({
+    apiUrl: login()?.apiUrl || defaultApiUrl(),
+    username: "",
+  });
 
-  onMount(() => { if (login() !== null) navigate("/") })
+  createEffect(() => { if (login() !== null) navigate("/") })
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
-    let currApiUrl = apiUrl()
-    let currUsername = username().trim()
+    let currApiUrl = newAccForm.apiUrl.replace(/\/$/, "");
+    let currUsername = newAccForm.username.trim();
     if (currApiUrl && currUsername) {
-      // remove trailing slash from url
-      currApiUrl = currApiUrl.replace(/\/$/, "")
-      // create unique api to use specified api url
-      let tempApi = new Api(null)
-      tempApi.defaultApiUrl = currApiUrl
+      let tempApi = getTempApi(currApiUrl);
       try {
         await tempApi.postUser({ username: currUsername });
         pushToast({ message: "account created", type: ToastTypes.Success });
@@ -55,8 +54,8 @@ const NewAccount: Component = () => {
                   class="input input-bordered"
                   placeholder="https://"
                   type="url" id="apiUrl" name="apiUrl"
-                  value={apiUrl() || ""}
-                  onInput={(e) => setApiUrl(e.currentTarget.value)}
+                  value={newAccForm.apiUrl}
+                  onInput={(e) => setNewAccForm({ ["apiUrl"]: e.currentTarget.value })}
                   required
                 />
               </div>
@@ -65,8 +64,8 @@ const NewAccount: Component = () => {
                 <input
                   class="input input-bordered"
                   type="text" id="username" name="username"
-                  value={username()}
-                  onInput={(e) => setUsername(e.currentTarget.value)}
+                  value={newAccForm.username}
+                  onInput={(e) => setNewAccForm({ ["username"]: e.currentTarget.value })}
                   required
                 />
               </div>
