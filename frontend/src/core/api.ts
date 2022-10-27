@@ -11,7 +11,9 @@ export default class Api {
       this.login = login
     }
   }
-
+  /**
+   * If the response is !ok, throw related 'ApiError' exception
+   */
   private throwStatusExceptions(response: Response) {
     if (!response.ok) {
       switch (response.status) {
@@ -29,7 +31,9 @@ export default class Api {
       throw new ApiError(`unhandled api exception: ${response.status}}`)
     }
   }
-
+  /**
+   * Convert a caught error into a ApiError, if possible
+   */
   private intoApiError(err: any) {
     if (err instanceof TypeError) {
       return new ApiError(
@@ -44,9 +48,22 @@ export default class Api {
     }
     return err;
   }
-
+  /**
+   * Get the api url, either default or the user configured one
+   */
   protected apiUrl(): string {
     return this.login?.apiUrl || this.defaultApiUrl
+  }
+  /**
+   * Get pre-made headers with Authorization and Content-Type
+   */
+  protected getHeaders(): Headers {
+    let headers = new Headers();
+    if (this.login) {
+      headers.append("Authorization", `Bearer ${this.login.token}`);
+    }
+    headers.append("Content-Type", "application/json; charset=utf-8");
+    return headers;
   }
 
   async postLogin(login: Login): Promise<string> {
@@ -56,6 +73,9 @@ export default class Api {
         {
           method: "POST",
           body: JSON.stringify(login),
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
         },
       );
       this.throwStatusExceptions(response);
@@ -71,6 +91,7 @@ export default class Api {
         {
           method: "POST",
           body: JSON.stringify(user),
+          headers: this.getHeaders(),
         },
       )
       this.throwStatusExceptions(response);
@@ -83,18 +104,23 @@ export default class Api {
     try {
       let response = await fetch(
         this.apiUrl() + "/shelves",
-      )
+        {
+          headers: this.getHeaders(),
+        },
+      );
       this.throwStatusExceptions(response);
       return await response.json()
     } catch (err) {
       throw this.intoApiError(err);
     }
   }
-
   async getShelfById(shelfId: number): Promise<Shelf> {
     try {
       let response = await fetch(
         this.apiUrl() + "/shelves/" + shelfId,
+        {
+          headers: this.getHeaders(),
+        },
       )
       this.throwStatusExceptions(response);
       return await response.json()
