@@ -7,7 +7,10 @@ import (
 )
 
 func InitRoutes(engine *gin.Engine, config core.AppConfig) {
-	engine.Use(cors.Default())
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowAllOrigins = true
+	corsConfig.AddAllowHeaders("Authorization")
+	engine.Use(cors.New(corsConfig))
 	engine.Use(AppConfigMiddleware(config))
 	engine.Use(AuthenticationMiddleware(false, config))
 	authRequired := AuthenticationMiddleware(true, config)
