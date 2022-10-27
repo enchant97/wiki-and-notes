@@ -3,10 +3,13 @@ import { Link, useNavigate } from "@solidjs/router";
 import { useLogin } from '../contexts/LoginProvider';
 import { defaultApiUrl } from '../core/helpers';
 import Api from '../core/api';
+import { useToast, ToastTypes } from '../contexts/ToastProvider';
+import { ApiError } from '../core/exceptions';
 
 const NewAccount: Component = () => {
   const navigate = useNavigate()
   const [login] = useLogin()
+  const { push: pushToast } = useToast();
   const [apiUrl, setApiUrl] = createSignal(login()?.apiUrl || defaultApiUrl() || null)
   const [username, setUsername] = createSignal("")
 
@@ -22,9 +25,17 @@ const NewAccount: Component = () => {
       // create unique api to use specified api url
       let tempApi = new Api(null)
       tempApi.defaultApiUrl = currApiUrl
-      // TODO handle possible errors
-      await tempApi.postUser({ username: currUsername })
-      navigate("/login")
+      try {
+        await tempApi.postUser({ username: currUsername });
+        pushToast({ message: "account created", type: ToastTypes.Success });
+        navigate("/login");
+      } catch (err) {
+        if (err instanceof ApiError) {
+          pushToast({ message: err.message, type: ToastTypes.Error });
+        } else {
+          throw err;
+        }
+      }
     }
   }
 
