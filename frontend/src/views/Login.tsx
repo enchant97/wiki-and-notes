@@ -5,10 +5,12 @@ import { useLogin } from '../contexts/LoginProvider';
 import { defaultApiUrl } from '../core/helpers';
 import Api from '../core/api';
 import { ApiError } from '../core/exceptions';
+import { useToast, ToastTypes } from '../contexts/ToastProvider';
 
 const Login: Component = () => {
   const navigate = useNavigate();
   const [login, setLogin] = useLogin();
+  const { push: pushToast } = useToast();
 
   const [loginForm, setLoginForm] = createStore({
     apiUrl: login()?.apiUrl || defaultApiUrl(),
@@ -32,7 +34,7 @@ const Login: Component = () => {
         setLogin({ apiUrl: currApiUrl, token })
       } catch (err) {
         if (err instanceof ApiError) {
-          alert(err.message)
+          pushToast({ message: err.message, type: ToastTypes.Error })
         } else {
           throw err;
         }

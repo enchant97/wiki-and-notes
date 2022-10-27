@@ -1,13 +1,27 @@
 import { Component, createResource, For } from 'solid-js';
-import { Link } from "@solidjs/router";
+import { Link, useNavigate } from "@solidjs/router";
 import { useApi } from './contexts/ApiProvider';
 import Api from './core/api';
+import { ApiError } from './core/exceptions';
+import { ToastTypes, useToast } from './contexts/ToastProvider';
 
 const App: Component = () => {
+  const navigate = useNavigate();
   const [api] = useApi()
+  const { push: pushToast } = useToast();
 
   const loadShelves = async (api: Api) => {
-    return await api.getShelves()
+    try {
+      return await api.getShelves()
+    } catch (err) {
+      if (err instanceof ApiError) {
+        pushToast({ message: err.message, type: ToastTypes.Error });
+        navigate("/login");
+      } else {
+        throw err;
+      }
+    }
+    return []
   }
 
   const [loadedShelves] = createResource(api, loadShelves)
