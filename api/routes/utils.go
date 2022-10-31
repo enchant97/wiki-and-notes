@@ -22,13 +22,13 @@ func postConvertUrl(ctx *gin.Context) {
 		return
 	}
 	if titleParts.BookTitle != nil {
-		if result := db.DB.First(book, "shelf_id = ?, system_title = ?", shelf.ID, titleParts.BookTitle); result.Error != nil {
+		if result := db.DB.First(book, "shelf_id = ? AND system_title = ?", shelf.ID, titleParts.BookTitle); result.Error != nil {
 			ctx.AbortWithError(http.StatusNotFound, result.Error)
 			return
 		}
 	}
 	if book.ID != 0 && titleParts.PageTitle != nil {
-		if result := db.DB.First(page, "book_id = ?, system_title = ?", book.ID, titleParts.PageTitle); result.Error != nil {
+		if result := db.DB.First(page, "book_id = ? AND system_title = ?", book.ID, titleParts.PageTitle); result.Error != nil {
 			ctx.AbortWithError(http.StatusNotFound, result.Error)
 			return
 		}
