@@ -54,4 +54,9 @@ func InitRoutes(engine *gin.Engine, config core.AppConfig) {
 		pagesGroup.POST("/:pageID/content", postPageContent)
 		pagesGroup.GET("/:pageID/content", getPageContent)
 	}
+
+	utilsGroup := engine.Group("/utils")
+	{
+		utilsGroup.POST("/convert-url", postConvertUrl)
+	}
 }

@@ -26,3 +26,15 @@ type CreatePage struct {
 	Title       string `binding:"required" json:"title"`
 	SystemTitle string `binding:"required" json:"systemTitle"`
 }
+
+type ConvertedIDs struct {
+	ShelfID uint  `binding:"required" json:"shelfId"`
+	BookID  *uint `json:"bookId"`
+	PageID  *uint `json:"pageId"`
+}
+
+type URLTitleParts struct {
+	ShelfTitle string  `binding:"required" json:"shelfTitle"`
+	BookTitle  *string `json:"bookTitle"`
+	PageTitle  *string `json:"pageTitle"`
+}

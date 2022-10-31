@@ -253,7 +253,7 @@ paths:
               schema:
                 type: string
   /utils/convert-url:
-    get:
+    post:
       tags:
         - Utils
       summary: "Convert frontend url into the id"
