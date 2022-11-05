@@ -18,5 +18,6 @@ export class ApiError extends Error {
   cause?: ApiErrorCause;
   constructor(message: string, options?: ApiErrorOptions) {
     super(message, options);
+    this.cause = options?.cause;
   }
 }

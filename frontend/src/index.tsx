@@ -13,6 +13,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import { ToastProvider } from './contexts/ToastProvider';
 import Toasts from './components/Toasts';
+import NotFound from './views/NotFound';
 
 render(() =>
   <ToastProvider>
@@ -22,7 +23,9 @@ render(() =>
           <Portal><Toasts /></Portal>
           <Header />
           <Routes>
+            <Route path='*' component={NotFound} />
             <Route path='/' component={App} />
+            <Route path='/404' component={NotFound} />
             <Route path='/create-account' component={NewAccount} />
             <Route path='/login' component={Login} />
             <Route path='/logout' component={Logout} />
