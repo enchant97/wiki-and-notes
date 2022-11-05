@@ -27,3 +27,15 @@ export type Login = {
 export type CreateUser = {
   username: string
 }
+
+export type UrlTitleParts = {
+  shelfTitle: string
+  bookTitle?: string
+  pageTitle?: string
+}
+
+export type ConvertedIds = {
+  shelfId: number
+  bookId?: number
+  pageId?: number
+}

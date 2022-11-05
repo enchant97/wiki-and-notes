@@ -1,6 +1,6 @@
 import { ApiError, ApiErrorTypes } from "./exceptions"
 import { defaultApiUrl } from "./helpers"
-import { CreateUser, Login, LoginDetails, Shelf, User } from "./types"
+import { ConvertedIds, CreateUser, Login, LoginDetails, Shelf, UrlTitleParts, User } from "./types"
 
 export default class Api {
   defaultApiUrl = defaultApiUrl()
@@ -124,6 +124,26 @@ export default class Api {
       )
       this.throwStatusExceptions(response);
       return await response.json()
+    } catch (err) {
+      throw this.intoApiError(err);
+    }
+  }
+  async postConvertUrl(titles: UrlTitleParts): Promise<ConvertedIds> {
+    try {
+      let response = await fetch(
+        this.apiUrl() + "/utils/convert-url",
+        {
+          method: "POST",
+          body: JSON.stringify(titles),
+          headers: this.getHeaders(),
+        },
+      )
+      this.throwStatusExceptions(response);
+      let data: ConvertedIds = await response.json()
+      // HACK remove this when server is fixed
+      if (data.pageId === 0) { data.pageId = undefined }
+      if (data.bookId === 0) { data.bookId = undefined }
+      return data
     } catch (err) {
       throw this.intoApiError(err);
     }

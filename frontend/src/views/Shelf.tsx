@@ -8,14 +8,15 @@ const Shelf: Component = () => {
   const [api] = useApi()
 
   const loadShelf = async (api: Api) => {
-    return await api.getShelfById(1) // TODO remove hardcode
+    let ids = await api.postConvertUrl({ shelfTitle: shelfTitle });
+    return await api.getShelfById(ids.shelfId);
   }
 
   const [loadedShelf] = createResource(api, loadShelf)
 
   return (
     <>
-    <h1 class="text-4xl">{loadedShelf()?.title}</h1>
+      <h1 class="text-4xl">{loadedShelf()?.title}</h1>
     </>
   );
 };
