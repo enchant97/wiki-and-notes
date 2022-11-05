@@ -32,9 +32,9 @@ const Shelf: Component = () => {
   const [loadedShelf] = createResource(api, loadShelf)
 
   return (
-    <>
+    <div class="bg-base-200 p-4">
       <h1 class="text-4xl">{loadedShelf()?.title}</h1>
-    </>
+    </div>
   );
 };
 
