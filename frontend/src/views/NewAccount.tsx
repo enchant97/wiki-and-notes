@@ -1,4 +1,4 @@
-import { Component, createEffect } from 'solid-js';
+import { Component, createEffect, createSignal, Show } from 'solid-js';
 import { createStore } from "solid-js/store";
 import { Link, useNavigate } from "@solidjs/router";
 import { useLogin } from '../contexts/LoginProvider';
@@ -11,6 +11,7 @@ const NewAccount: Component = () => {
   const navigate = useNavigate()
   const [login] = useLogin()
   const { push: pushToast } = useToast();
+  const [submitLoading, setSubmitLoading] = createSignal(false);
   const [newAccForm, setNewAccForm] = createStore({
     apiUrl: login()?.apiUrl || defaultApiUrl(),
     username: "",
@@ -23,6 +24,7 @@ const NewAccount: Component = () => {
     let currApiUrl = newAccForm.apiUrl.replace(/\/$/, "");
     let currUsername = newAccForm.username.trim();
     if (currApiUrl && currUsername) {
+      setSubmitLoading(true);
       let tempApi = getTempApi(currApiUrl);
       try {
         await tempApi.postUser({ username: currUsername });
@@ -34,6 +36,8 @@ const NewAccount: Component = () => {
         } else {
           throw err;
         }
+      } finally {
+        setSubmitLoading(false);
       }
     }
   }
@@ -70,7 +74,12 @@ const NewAccount: Component = () => {
                 />
               </div>
               <div class="btn-group btn-group-vertical mt-6">
-                <button class="btn btn-primary" type="submit">Create Account</button>
+                <Show
+                  when={submitLoading() === false}
+                  fallback={<button type="button" class="btn btn-disabled loading" disabled>Create Account</button>}
+                >
+                  <button class="btn btn-primary" type="submit">Create Account</button>
+                </Show>
                 <Link class="btn" href="/login">Login Instead?</Link>
               </div>
             </div>
