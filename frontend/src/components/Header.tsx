@@ -15,7 +15,7 @@ const Header: Component = () => {
           <div class="dropdown dropdown-end">
             <span tabindex="0" class="btn btn-square">Me</span>
             <ul tabindex="0" class="menu menu-compact dropdown-content mt-6 p-2 shadow-lg bg-base-100 rounded-box w-52">
-              <li><Link href="">Profile</Link></li>
+              <li><Link href="/me">Profile</Link></li>
               <li><Link href="/logout">Logout</Link></li>
             </ul>
           </div>

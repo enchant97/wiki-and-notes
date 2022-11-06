@@ -14,6 +14,7 @@ import Footer from './components/Footer';
 import { ToastProvider } from './contexts/ToastProvider';
 import Toasts from './components/Toasts';
 import NotFound from './views/NotFound';
+import Me from './views/Me';
 
 render(() =>
   <ToastProvider>
@@ -29,6 +30,7 @@ render(() =>
             <Route path='/create-account' component={NewAccount} />
             <Route path='/login' component={Login} />
             <Route path='/logout' component={Logout} />
+            <Route path='/me' component={Me} />
             <Route path='/:shelfTitle' component={Shelf} />
           </Routes>
           <Footer />

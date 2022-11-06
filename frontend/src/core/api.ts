@@ -100,6 +100,20 @@ export default class Api {
       throw this.intoApiError(err);
     }
   }
+  async getMe(): Promise<User> {
+    try {
+      let response = await fetch(
+        this.apiUrl() + "/users/me",
+        {
+          headers: this.getHeaders(),
+        }
+      )
+      this.throwStatusExceptions(response);
+      return await response.json()
+    } catch (err) {
+      throw this.intoApiError(err);
+    }
+  }
   async getShelves(): Promise<Shelf[]> {
     try {
       let response = await fetch(
